@@ -1,0 +1,15 @@
+syntax: glob
+*~
+Makefile
+config.h
+config.log
+config.status
+libtool
+src/.deps/*
+src/.libs/*
+src/Makefile
+src/libcopynes.la
+src/libcopynes_la-copynes.lo
+src/libcopynes_la-copynes.o
+stamp-h1
+

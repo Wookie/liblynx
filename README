@@ -1,0 +1,17 @@
+liblynx
+
+This is a brand new, portable library for emulating the Atari Lynx.  I'm hoping
+to build a good Atari Lynx debugger and emulator with it to support my Lynx
+development efforts.
+
+I cribbed heavily from the Lynx emulation code found in the Handy emulator.  I
+converted the C++ in that code back to C for portability reasons and to make it
+easier to port.  I used stdin.h for all variables and data type declarations.
+
+If you use this library in a project, please let me know what you're 
+using it for.  If you find a bug, let me know, or better yet, send me a 
+patch to fix it ;-)
+
+Enjoy!
+
+Dave
