@@ -29,12 +29,17 @@ typedef enum {
 /* lynx log callback signature */
 typedef void (*lynx_log_fn)(LYNX_LOG_LEVEL const lvl, char const * const msg);
 
+/* declare opaque pointer to lynx private data */
 typedef struct lynx_private_s * lynx_private_t;
 
+/* declare the lynx state structure, this is public along with the public 
+ * subsystem states structures so that client applications can inspect the
+ * state directly. this saves me from having to write get/set functions
+ * for every piece of state. */
 typedef struct lynx_s
 {
     cpu_t           cpu;
-    rom_t           rom;
+    rom_t *         rom;
 /*
     mikey_t         mikey;
     suzie_t         suzie;
@@ -63,11 +68,19 @@ void lynx_set_cart(lynx_t * const lynx, char const * const cart);
 /* reset the lynx */
 void lynx_reset(lynx_t * const lynx);
 
+/* read a byte from the lynx memory, this presents the cpu's view on memory
+ * and is subject to the memory mapping register state */
+uint8_t lynx_peek(lynx_t * const lynx, uint16_t const address);
+
+/* write a byte to the lynx memory, this presents the cpu's view on memory
+ * and is subject to the memory mapping register state */
+bool lynx_poke(lynx_t * const lynx, uint16_t const address, uint8_t const data);
+
 /* set input button states */
 /*void lynx_set_input(lynx_t * const lynx, input_t const * const input); */
 
-/* update the lynx */
-void lynx_update(lynx_t * const lynx);
+/* make another clock tick happen */
+void lynx_tick(lynx_t * const lynx);
 
 
 #endif

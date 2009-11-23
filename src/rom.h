@@ -20,15 +20,34 @@
 #ifndef _ROM_H_
 #define _ROM_H_
 
+typedef struct rom_private_s * rom_private_t;
+
 typedef struct rom_s
 {
     uint8_t*    rom;        /* ROM data loaded from the rom file */
     size_t      size;       /* size of the ROM space */
 
+    rom_private_t private;  /* ROM private config data */
+
 } rom_t;
 
-bool rom_init(rom_t * const rom, char const * const romfile, log_fn log);
-bool rom_deinit(rom_t * const rom, log_fn log);
+#define ROM_START           (0xF000)
+#define IS_ROM_ADDRESS(a)   (a >= ROM_START)
+
+rom_t* rom_new();
+void rom_delete(rom_t * const rom);
+
+/* set the log function used for the ROM subsystem */
+bool rom_set_log_callback(rom_t * const rom, log_fn log);
+
+bool rom_init(rom_t * const rom, char const * const romfile);
+bool rom_deinit(rom_t * const rom);
+
+bool rom_set_read_only(rom_t * const rom, bool const read_only);
+bool rom_is_read_only(rom_t * const rom);
+
+bool rom_peek(rom_t * const rom, uint16_t const address, uint8_t * const data);
+bool rom_poke(rom_t * const rom, uint16_t const address, uint8_t const data);
 
 #endif
 

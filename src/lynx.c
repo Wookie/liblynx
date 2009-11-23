@@ -27,10 +27,13 @@
 #include "rom.h"
 #include "lynx.h"
 
+/* private lynx data struct */
 struct lynx_private_s
 {
     log_fn      lfn;            /* log callbacks for each log level */
 };
+
+
 
 /* this function initializes the lynx and loads the rom data */
 lynx_t * lynx_new()
@@ -41,8 +44,13 @@ lynx_t * lynx_new()
     /* allocate the private struct */
     lynx->private = calloc(1, sizeof(struct lynx_private_s));
 
+    /* allocate the rom interface */
+    lynx->rom = rom_new();
+
     return lynx;
 }
+
+
 
 void lynx_delete(lynx_t * const lynx)
 {
@@ -62,9 +70,14 @@ void lynx_delete(lynx_t * const lynx)
         LWARN(lynx->private->lfn, "lynx_delete(): private struct pointer is NULL");
     }
 
+    /* free the rom interface */
+    rom_delete(lynx->rom);
+
     /* free the lynx struct memory */
     free(lynx);
 }
+
+
 
 bool lynx_set_log_callback(lynx_t * const lynx, lynx_log_fn fn)
 {
@@ -80,6 +93,8 @@ bool lynx_set_log_callback(lynx_t * const lynx, lynx_log_fn fn)
     return true;
 }
 
+
+
 void lynx_init(lynx_t * const lynx, char const * const rom)
 {
     /* initialize mikey */
@@ -89,10 +104,13 @@ void lynx_init(lynx_t * const lynx, char const * const rom)
     /* initialize ram */
 
     /* initialize rom */
-    rom_init(&lynx->rom, rom, lynx->private->lfn);
+    rom_set_log_callback(lynx->rom, lynx->private->lfn);
+    rom_init(lynx->rom, rom);
 
     /* initialize input */
 }
+
+
 
 void lynx_deinit(lynx_t * const lynx)
 {
@@ -103,25 +121,76 @@ void lynx_deinit(lynx_t * const lynx)
     /* deinitialize ram */
 
     /* deinitialize rom */
-    rom_deinit(&lynx->rom, lynx->private->lfn);
+    rom_deinit(lynx->rom);
 
     /* deinitialize input */
 }
+
+
 
 void lynx_set_cart(lynx_t * const lynx, char const * const cart)
 {
 }
 
+
+
 void lynx_reset(lynx_t * const lynx)
 {
 }
+
+
+
+/* read a byte from the lynx memory, this presents the cpu's view on memory
+ * and is subject to the memory mapping register state */
+uint8_t lynx_peek(lynx_t * const lynx, uint16_t const address)
+{
+    uint8_t data = 0x00;
+
+    /* TODO: get the mikey memory mapping register state */
+
+    if((0xFF00 & address) == 0x0000)
+    {
+        /* zero page access */
+    }
+    else if((address >= 0x0100) && (address < 0xD000))
+    {
+        /* main RAM */
+    }
+    else if((address >= 0xD000) && (address < 0xE000))
+    {
+        /* suzie access */
+    }
+    else if((address >= 0xE000) && (address < 0xF000))
+    {
+        /* mikey access */
+    }
+    else if(IS_ROM_ADDRESS(address))
+    {
+        /* ROM access */
+        rom_peek(lynx->rom, address, &data);
+    }
+
+    return data;
+}
+
+
+
+/* write a byte to the lynx memory, this presents the cpu's view on memory
+ * and is subject to the memory mapping register state */
+bool lynx_poke(lynx_t * const lynx, uint16_t const address, uint8_t const data)
+{
+}
+
+
 
 /* void lynx_set_input(lynx_t * const lynx, input_t const * const input)
  * {
  * }
  */
 
-void lynx_update(lynx_t * const lynx)
+
+
+void lynx_tick(lynx_t * const lynx)
 {
 }
 
