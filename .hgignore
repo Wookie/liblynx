@@ -1,5 +1,6 @@
 syntax: glob
 *~
+*.swp
 Makefile
 config.h
 config.log
@@ -8,8 +9,8 @@ libtool
 src/.deps/*
 src/.libs/*
 src/Makefile
-src/libcopynes.la
-src/libcopynes_la-copynes.lo
-src/libcopynes_la-copynes.o
+src/liblynx.la
+src/liblynx_la-lynx.lo
+src/liblynx_la-lynx.o
 stamp-h1
 
