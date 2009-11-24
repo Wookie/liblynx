@@ -1,5 +1,5 @@
 /*
- * rom.h
+ * suzy.h
  * Copyright (C) David Huseby 2009 <dave@linuxprogrammer.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -17,29 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef _ROM_H_
-#define _ROM_H_
+#ifndef _SUZY_H_
+#define _SUZY_H_
 
-#define ROM_SIZE            (0x0200)
-#define ROM_START           (0xFE00)
-#define ROM_END             (0xFFF7)
-#define IS_ROM_ADDRESS(a)   ((a >= ROM_START) && (a <= ROM_END))
+#define SUZY_SIZE            (0x0100)
+#define SUZY_START           (0xFC00)
+#define SUZY_END             (0xFCFF)
+#define IS_SUZY_ADDRESS(a)   ((a >= SUZY_START) && (a <= SUZY_END))
 
-typedef struct rom_private_s * rom_private_t;
-
-typedef struct rom_s
+typedef struct suzy_s
 {
-    uint8_t         data[ROM_SIZE]; /* ROM data loaded from the rom file */
-
-    rom_private_t   private;        /* ROM private config data */
-
-} rom_t;
-
-bool rom_init(rom_t * const rom, char const * const romfile, log_fn fn);
-bool rom_deinit(rom_t * const rom);
-
-bool rom_peek(rom_t * const rom, uint16_t const address, uint8_t * const data);
-bool rom_poke(rom_t * const rom, uint16_t const address, uint8_t const data);
+    /* suzy registers */
+} suzy_t;
 
 #endif
 
