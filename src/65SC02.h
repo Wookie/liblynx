@@ -45,11 +45,15 @@ typedef struct cpu_s
     uint8_t         SP;         /* Stack Pointer                */
     uint16_t        PC;         /* Program Counter              */
 
-    cpu_private_t   state;      /* private internal CPU state   */
+    cpu_private_t   private;    /* private internal CPU state   */
 
 } cpu_t;
 
-void cpu_tick(cpu_t * const cpu);
+bool cpu_init(cpu_t * const cpu, log_fn fn);
+bool cpu_deinit(cpu_t * const cpu);
+
+bool cpu_tick(cpu_t * const cpu);
+int cpu_get_remaining_ticks(cpu_t const * const cpu);
 
 
 #endif
