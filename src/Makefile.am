@@ -12,6 +12,7 @@ include_HEADERS = \
 	rom.h \
 	suzy.h
 liblynx_la_SOURCES = \
+	65SC02.c \
 	log.c \
 	lynx.c \
 	mikey.c \
