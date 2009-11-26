@@ -20,25 +20,16 @@
 #ifndef _LYNX_H_
 #define _LYNX_H_
 
-typedef enum {
+typedef enum lynx_log_lvl_e 
+{
     LYNX_LOG,
     LYNX_WARNING,
     LYNX_ERROR
-} LYNX_LOG_LEVEL;
 
-typedef enum {
-    SEQ_ACCESS_DISABLE  = 0x80,
-    RESERVED_1          = 0x40,
-    RESERVED_2          = 0x20,
-    RESERVED_3          = 0x10,
-    CPU_INT_VECTORS     = 0x08,
-    ROM                 = 0x04,
-    MIKEY               = 0x02,
-    SUZY                = 0x01
-} MEM_MAP_CTRL_FLAGS;
+} lynx_log_lvl_t;
 
 /* lynx log callback signature */
-typedef void (*lynx_log_fn)(LYNX_LOG_LEVEL const lvl, char const * const msg);
+typedef void (*lynx_log_fn)(lynx_log_lvl_t const lvl, char const * const msg);
 
 /* declare opaque pointer to lynx private data */
 typedef struct lynx_private_s * lynx_private_t;
@@ -49,16 +40,13 @@ typedef struct lynx_private_s * lynx_private_t;
  * for every piece of state. */
 typedef struct lynx_s
 {
-    cpu_t           cpu;
+    sysclock_t      clock;
+    sysbus_t        bus;
     rom_t           rom;
     ram_t           ram;
     mikey_t         mikey;
-/*
+    cpu_t           cpu;
     suzy_t          suzy;
-    input_t         input;
-*/
-
-    uint8_t         mem_map_ctrl;   /* memory map control register */
 
     lynx_private_t  private;        /* private lynx data */
 
@@ -69,24 +57,8 @@ bool lynx_init(lynx_t * const lynx, char const * const rom,
                char const * const cart, lynx_log_fn fn);
 bool lynx_deinit(lynx_t * const lynx);
 
-/* reset the lynx */
-void lynx_reset(lynx_t * const lynx);
-
-/* read a byte from the lynx memory, this presents the cpu's view on memory
- * and is subject to the memory mapping register state.  this interface is
- * for debugging purposes. */
-bool lynx_peek(lynx_t * const lynx, uint16_t const address, uint8_t * const data);
-
-/* write a byte to the lynx memory, this presents the cpu's view on memory
- * and is subject to the memory mapping register state.  this interface is
- * for debugging purposes. */
-bool lynx_poke(lynx_t * const lynx, uint16_t const address, uint8_t const data);
-
-/* set input button states */
-/*void lynx_set_input(lynx_t * const lynx, input_t const * const input); */
-
 /* make another clock tick happen */
-void lynx_tick(lynx_t * const lynx);
+void lynx_update(lynx_t * const lynx);
 
 
 #endif

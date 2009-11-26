@@ -1,5 +1,5 @@
 /*
- * intvec.h
+ * sysclock.h
  * Copyright (C) David Huseby 2009 <dave@linuxprogrammer.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -17,20 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef _INTVEC_H_
-#define _INTVEC_H_
+#ifndef _SYSCLOCK_H_
+#define _SYSCLOCK_H_
 
-#define INTVEC_START           (0xFFFA)
-#define INTVEC_END             (0xFFFF)
-#define IS_INTVEC_ADDRESS(a)   ((a >= INTVEC_START) && (a <= INTVEC_END))
+/* the Lynx clock is 16 MHz, which means a tick happens every 63 nanoseconds */
+#define NS_PER_TICK         (63)
+#define NS_PER_LOW_PHASE    (31)
+#define NS_PER_HIGH_PHASE   (32)
 
-typedef struct intvec_s
+typedef struct sysclock_s
 {
-    /* the three 6502 interrupt registers */
-    uint16_t    nmi;
-    uint16_t    reset;
-    uint16_t    cpu;
-} intvec_t;
+    uint64_t    ticks;
+    bool        state;
+
+} sysclock_t;
+
+bool sysclock_init(sysclock_t * const clock);
+bool sysclock_deinit(sysclock_t * const clock);
+
+bool sysclock_update(sysclock_t * const clock);
 
 #endif
 

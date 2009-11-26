@@ -17,6 +17,57 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "memmap.h"
+#include "msg.h"
+#include "log.h"
 #include "mikey.h"
+
+typedef enum mikey_state_e
+{
+    MIKEY_RESET,
+    CPU_RUN
+
+} mikey_state_t;
+
+struct mikey_private_s
+{
+    msg_q_t         *q;
+    mikey_state_t   state;      /* mikey state */
+};
+
+bool mikey_init(mikey_t * const mikey, msg_q_t * const q)
+{
+    if(!mikey || !q)
+        return false;
+
+    /* zero out mikey */
+    memset(mikey, 0, sizeof(mikey_t));
+
+    /* allocate mikey's private struct */
+    mikey->private = calloc(1, sizeof(struct mikey_private_s));
+
+    /* store the msg q pointer */
+    mikey->private->q = q;
+
+    return true;
+}
+
+
+bool mikey_deinit(mikey_t * const mikey)
+{
+    if(!mikey)
+        return false;
+
+    /* free the private struct */
+    if(mikey->private)
+        free(mikey->private);
+
+    return true;
+}
 
 

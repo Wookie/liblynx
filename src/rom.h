@@ -20,11 +20,6 @@
 #ifndef _ROM_H_
 #define _ROM_H_
 
-#define ROM_SIZE            (0x0200)
-#define ROM_START           (0xFE00)
-#define ROM_END             (0xFFF7)
-#define IS_ROM_ADDRESS(a)   ((a >= ROM_START) && (a <= ROM_END))
-
 typedef struct rom_private_s * rom_private_t;
 
 typedef struct rom_s
@@ -35,7 +30,7 @@ typedef struct rom_s
 
 } rom_t;
 
-bool rom_init(rom_t * const rom, char const * const romfile, log_fn fn);
+bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t * const q);
 bool rom_deinit(rom_t * const rom);
 
 bool rom_peek(rom_t * const rom, uint16_t const address, uint8_t * const data);

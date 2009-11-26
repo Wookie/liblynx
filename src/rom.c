@@ -1,5 +1,5 @@
 /*
- * rom.h
+ * rom.c
  * Copyright (C) David Huseby 2009 <dave@linuxprogrammer.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -23,25 +23,24 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "memmap.h"
+#include "msg.h"
 #include "log.h"
+#include "memmap.h"
 #include "rom.h"
-
-#define ROM_LOG(a, ...) if((a->private) && (a->private->lfn)) LLOG(a->private->lfn, __VA_ARGS__)
-#define ROM_WARN(a, ...) if((a->private) && (a->private->lfn)) LWARN(a->private->lfn, __VA_ARGS__)
-#define ROM_ERR(a, ...) if((a->private) && (a->private->lfn)) LERR(a->private->lfn, __VA_ARGS__)
 
 struct rom_private_s
 {
-    log_fn      lfn;
+    msg_q_t     *q;
 };
 
 
-bool rom_init(rom_t * const rom, char const * const romfile, log_fn fn)
+bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t * const q)
 {
     FILE* in = NULL;
     size_t num_read = 0;
 
-    if(!rom)
+    if(!rom || !q)
         return false;
 
     /* zero out the rom struct */
@@ -50,18 +49,18 @@ bool rom_init(rom_t * const rom, char const * const romfile, log_fn fn)
     /* allocate private struct */
     rom->private = calloc(1, sizeof(struct rom_private_s));
 
-    /* store the log callback function */
-    rom->private->lfn = fn;
-    
+    /* store the msg q pointer */
+    rom->private->q = q;
+
     if(!romfile)
     {
-        ROM_ERR(rom, "rom_init(): NULL romfile pointer");
+        LERR(rom->private->q, ROM, "rom_init(): NULL romfile pointer");
         return false;
     }
 
     if((in = fopen(romfile, "rb")) == NULL)
     {
-        ROM_ERR(rom, "rom_init(): failed to open romfile");
+        LERR(rom->private->q, ROM, "rom_init(): failed to open romfile");
         return false;
     }
 
@@ -69,14 +68,14 @@ bool rom_init(rom_t * const rom, char const * const romfile, log_fn fn)
     fseek(in, 0, SEEK_END);
     if(ftell(in) > ROM_SIZE)
     {
-        ROM_WARN(rom, "rom_init(): rom file larger than rom memory");
+        LWARN(rom->private->q, ROM, "rom_init(): rom file larger than rom memory");
     }
     fseek(in, 0, SEEK_SET);
 
     /* read in the file data */
     if((num_read = fread(rom->data, sizeof(uint8_t), ROM_SIZE, in)) != ROM_SIZE)
     {
-        ROM_ERR(rom, "rom_init(); failed to read in rom file");
+        LERR(rom->private->q, ROM, "rom_init(); failed to read in rom file");
         fclose(in);
         return false;
     }
@@ -108,13 +107,13 @@ bool rom_peek(rom_t * const rom, uint16_t const address, uint8_t * const data)
 
     if(!data)
     {
-        ROM_ERR(rom, "rom_peek(): null data pointer");
+        LERR(rom->private->q, ROM, "rom_peek(): null data pointer");
         return false;
     }
     
     if(!IS_ROM_ADDRESS(address))
     {
-        ROM_ERR(rom, "rom_peek(): 0x%04x out of ROM address range", address);
+        LERR(rom->private->q, ROM, "rom_peek(): 0x%04x out of ROM address range", address);
         return false;
     }
 
@@ -131,7 +130,7 @@ bool rom_poke(rom_t * const rom, uint16_t const address, uint8_t const data)
     if(!rom || !rom->private)
         return false;
 
-    ROM_WARN(rom, "rom_poke(); writing data to 0x%04x", address);
+    LWARN(rom->private->q, ROM, "rom_poke(); writing data to 0x%04x", address);
 
     /* write the byte to the rom buffer */
     rom->data[(address - ROM_START)] = data;

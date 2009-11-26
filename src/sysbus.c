@@ -1,5 +1,5 @@
 /*
- * suzy.h
+ * sysbus.c
  * Copyright (C) David Huseby 2009 <dave@linuxprogrammer.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -17,20 +17,48 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef _SUZY_H_
-#define _SUZY_H_
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
-typedef struct suzy_private_s * suzy_private_t;
+#include "memmap.h"
+#include "msg.h"
+#include "log.h"
+#include "sysbus.h"
 
-typedef struct suzy_s
+struct sysbus_private_s
 {
-    suzy_private_t      private;
+    msg_q_t     *q;
+};
 
-} suzy_t;
+
+bool sysbus_init(sysbus_t * const bus, msg_q_t * const q)
+{
+    if(!bus || !q)
+        return false;
+
+    /* clear out sysbus struct */
+    memset(bus, 0, sizeof(sysbus_t));
+
+    /* allocate private struct */
+    bus->private = calloc(1, sizeof(struct sysbus_private_s));
+
+    /* store msg q pointer */
+    bus->private->q = q;
+
+    return true;
+}
 
 
-bool suzy_init(suzy_t * const suzy, msg_q_t * const q);
-bool suzy_deinit(suzy_t * const suzy);
+bool sysbus_deinit(sysbus_t * const bus)
+{
+    if(!bus)
+        return false;
 
-#endif
+    if(bus->private)
+        free(bus->private);
+
+    return true;
+}
 

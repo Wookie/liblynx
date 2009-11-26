@@ -23,27 +23,30 @@
 #include <string.h>
 
 #include "misc.h"
+#include "memmap.h"
+#include "msg.h"
 #include "log.h"
+#include "cpu.h"
 #include "65SC02.h"
 #include "ram.h"
 #include "mikey.h"
 #include "suzy.h"
 #include "rom.h"
-#include "intvec.h"
+#include "sysclock.h"
+#include "sysbus.h"
+#include "mem.h"
 #include "lynx.h"
-
-#define LYNX_LOG(a, ...) if((a->private) && (a->private->lfn)) LLOG(a->private->lfn, __VA_ARGS__)
-#define LYNX_WARN(a, ...) if((a->private) && (a->private->lfn)) LWARN(a->private->lfn, __VA_ARGS__)
-#define LYNX_ERR(a, ...) if((a->private) && (a->private->lfn)) LERR(a->private->lfn, __VA_ARGS__)
-
 
 /* private lynx data struct */
 struct lynx_private_s
 {
-    log_fn      lfn;            /* log callbacks for each log level */
+    lynx_log_fn lfn;            /* log callbacks for each log level */
+    msg_q_t     q;              /* message queue */
 };
 
-
+#define LYNX_LOG(a, msg)  if((a->private) && (a->private->lfn)) (*(a->private->lfn))(LYNX_LOG, msg)
+#define LYNX_WARN(a, msg) if((a->private) && (a->private->lfn)) (*(a->private->lfn))(LYNX_WARNING, msg)
+#define LYNX_ERR(a, msg)  if((a->private) && (a->private->lfn)) (*(a->private->lfn))(LYNX_ERROR, msg)
 
 bool lynx_init(lynx_t * const lynx, char const * const rom,
                char const * const cart, lynx_log_fn fn)
@@ -58,20 +61,31 @@ bool lynx_init(lynx_t * const lynx, char const * const rom,
     lynx->private = calloc(1, sizeof(struct lynx_private_s));
 
     /* store the lynx log callback */
-    lynx->private->lfn = (log_fn)fn;
+    lynx->private->lfn = fn;
+
+    /* initialize the msg queue */
+    msg_q_init(&lynx->private->q);
+
+    /* initialize the system bus */
+    sysbus_init(&lynx->bus, &lynx->private->q);
 
     /* initialize rom */
-    rom_init(&lynx->rom, rom, (log_fn)fn);
+    rom_init(&lynx->rom, rom, &lynx->private->q);
 
     /* initialize ram */
-    ram_init(&lynx->ram, (log_fn)fn);
+    ram_init(&lynx->ram, &lynx->private->q);
 
     /* initialize mikey */
-    /* mikey_init(&lynx->mikey, fn); */
+    mikey_init(&lynx->mikey, &lynx->private->q);
 
+    /* initialize the cpu */
+    cpu_init(&lynx->cpu, &lynx->private->q);
+    
     /* initialize suzie */
+    suzy_init(&lynx->suzy, &lynx->private->q);
 
-    /* initialize input */
+    /* initialize the system clock */
+    sysclock_init(&lynx->clock);
 
     return true;
 }
@@ -83,17 +97,26 @@ bool lynx_deinit(lynx_t * const lynx)
     if(!lynx)
         return false;
 
-    /* deinitialize input */
+    /* deinitialize the clock */
+    sysclock_deinit(&lynx->clock);
+
+    /* deinitialize suzy */
+    suzy_deinit(&lynx->suzy);
+
+    /* deinitialize the cpu */
+    cpu_deinit(&lynx->cpu);
     
     /* deinitialize mikey */
-
-    /* deinitialize suzie */
+    mikey_deinit(&lynx->mikey);
 
     /* deinitialize ram */
     ram_deinit(&lynx->ram);
 
     /* deinitialize rom */
     rom_deinit(&lynx->rom);
+
+    /* deinitialize the system bus */
+    sysbus_deinit(&lynx->bus);
 
     if(lynx->private)
         free(lynx->private);
@@ -103,98 +126,37 @@ bool lynx_deinit(lynx_t * const lynx)
 
 
 
-void lynx_set_cart(lynx_t * const lynx, char const * const cart)
+void lynx_update(lynx_t * const lynx)
 {
-}
+    msg_t msg;
 
+    if(!lynx)
+        return;
 
-
-void lynx_reset(lynx_t * const lynx)
-{
-}
-
-
-
-/* read a byte from the lynx memory, this presents the cpu's view on memory
- * and is subject to the memory mapping register state */
-bool lynx_peek(lynx_t * const lynx, uint16_t const address, uint8_t * const data)
-{
-    if(!lynx || !lynx->private)
-        return false;
-
-    if(!data)
+    /* process all of the messages */
+    while(msg_q_dequeue(&lynx->private->q, &msg))
     {
-        LYNX_ERR(lynx, "lynx_peek(): NULL data pointer");
-        return false;
+        switch(msg.type)
+        {
+            case LOG_MSG:
+                LYNX_LOG(lynx, msg.params.msg);
+                free(msg.params.msg);
+                break;
+            case WARN_MSG:
+                LYNX_WARN(lynx, msg.params.msg);
+                free(msg.params.msg);
+                break;
+            case ERR_MSG:
+                LYNX_ERR(lynx, msg.params.msg);
+                free(msg.params.msg);
+                break;
+            case SET_RESET:
+                break;
+            case SET_ADDRESS_BUS:
+                break;
+            case SET_DATA_BUS:
+                break;
+        }
     }
-
-    if(IS_ZERO_PAGE_ADDRESS(address))
-    {
-        /* zero page access to RAM */
-        ram_peek(&lynx->ram, address, data);
-    }
-    else if(IS_MAIN_RAM_ADDRESS(address))
-    {
-        /* main RAM */
-        ram_peek(&lynx->ram, address, data);
-    }
-    else if(IS_SUZY_ADDRESS(address) && IS_BIT_SET(lynx->mem_map_ctrl, SUZY))
-    {
-        /* suzy access */
-    }
-    else if(IS_MIKEY_ADDRESS(address) && IS_BIT_SET(lynx->mem_map_ctrl, MIKEY))
-    {
-        /* mikey access */
-        /* mikey_peek(&lynx->mikey, address, data); */
-    }
-    else if(IS_ROM_ADDRESS(address) && IS_BIT_SET(lynx->mem_map_ctrl, ROM))
-    {
-        /* ROM access */
-        rom_peek(&lynx->rom, address, data);
-    }
-    else if(address == 0xFFF8)
-    {
-        /* reserved register */
-        (*data) = 0x00;
-    }
-    else if(address == 0xFFF9)
-    {
-        /* memory map control register */
-        (*data) = lynx->mem_map_ctrl;
-    }
-    else if(IS_INTVEC_ADDRESS(address) && 
-            IS_BIT_SET(lynx->mem_map_ctrl, CPU_INT_VECTORS))
-    {
-        /* interrupt vector registers */
-    }
-    else
-    {
-        /* RAM access */
-        ram_peek(&lynx->ram, address, data);
-    }
-
-    return true;
-}
-
-
-
-/* write a byte to the lynx memory, this presents the cpu's view on memory
- * and is subject to the memory mapping register state */
-bool lynx_poke(lynx_t * const lynx, uint16_t const address, uint8_t const data)
-{
-    return true;
-}
-
-
-
-/* void lynx_set_input(lynx_t * const lynx, input_t const * const input)
- * {
- * }
- */
-
-
-
-void lynx_tick(lynx_t * const lynx)
-{
 }
 

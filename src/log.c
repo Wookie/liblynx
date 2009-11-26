@@ -19,23 +19,37 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
+#include "memmap.h"
+#include "msg.h"
 #include "log.h"
 
 #define MAX_LOG_MSG_SIZE (4096)
 
-void log_msg(log_fn log, LOG_LEVEL const lvl, char const * const msg, ...)
+void log_msg(msg_q_t * const q, source_t const src, log_level_t const lvl, 
+             char const * const fmt, ...)
 {
+    static msg_t msg;
     static char buf[MAX_LOG_MSG_SIZE];
     va_list ap;
+
+    if(!q)
+        return;
+
     va_start(ap, msg);
     
     /* format the message */
-    vsnprintf(buf, MAX_LOG_MSG_SIZE, msg, ap);
+    vsnprintf(buf, MAX_LOG_MSG_SIZE, fmt, ap);
 
-    /* log the message */
-    if(log)
-        (*log)(lvl, msg);
+    /* queue up the log the message */
+    memset(&msg, 0, sizeof(msg_t));
+    msg.type = lvl;
+    msg.src = src;
+    msg.params.msg = strdup(buf); /* memory will be released when processed */
+    msg_q_enqueue(q, &msg);
 
     va_end(ap);
 }

@@ -20,15 +20,19 @@
 #ifndef _MIKEY_H_
 #define _MIKEY_H_
 
-#define MIKEY_SIZE            (0x0100)
-#define MIKEY_START           (0xFD00)
-#define MIKEY_END             (0xFDFF)
-#define IS_MIKEY_ADDRESS(a)   ((a >= MIKEY_START) && (a <= MIKEY_END))
+typedef struct mikey_private_s * mikey_private_t;
 
 typedef struct mikey_s
 {
     /* mikey registers */
+
+    mikey_private_t     private;
+
 } mikey_t;
+
+
+bool mikey_init(mikey_t * const mikey, msg_q_t * const q);
+bool mikey_deinit(mikey_t * const mikey);
 
 #endif
 

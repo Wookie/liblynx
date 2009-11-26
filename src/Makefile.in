@@ -70,9 +70,10 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 liblynx_la_LIBADD =
-am_liblynx_la_OBJECTS = liblynx_la-65SC02.lo liblynx_la-log.lo \
-	liblynx_la-lynx.lo liblynx_la-mikey.lo liblynx_la-ram.lo \
-	liblynx_la-rom.lo
+am_liblynx_la_OBJECTS = liblynx_la-cpu.lo liblynx_la-log.lo \
+	liblynx_la-lynx.lo liblynx_la-mem.lo liblynx_la-mikey.lo \
+	liblynx_la-msg.lo liblynx_la-ram.lo liblynx_la-rom.lo \
+	liblynx_la-suzy.lo liblynx_la-sysbus.lo liblynx_la-sysclock.lo
 liblynx_la_OBJECTS = $(am_liblynx_la_OBJECTS)
 liblynx_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(liblynx_la_CFLAGS) \
@@ -212,22 +213,32 @@ lib_LTLIBRARIES = liblynx.la
 include_HEADERS = \
 	65SC02.h \
 	cart.h \
-	intvec.h \
+	cpu.h \
 	log.h \
 	lynx.h \
+	mem.h \
+	memmap.h \
 	mikey.h \
 	misc.h \
+	msg.h \
 	ram.h \
 	rom.h \
-	suzy.h
+	suzy.h \
+	sysbus.h \
+	sysclock.h
 
 liblynx_la_SOURCES = \
-	65SC02.c \
+	cpu.c \
 	log.c \
 	lynx.c \
+	mem.c \
 	mikey.c \
+	msg.c \
 	ram.c \
-	rom.c
+	rom.c \
+	suzy.c \
+	sysbus.c \
+	sysclock.c
 
 liblynx_la_CFLAGS = -Wall
 liblynx_la_LDFLAGS = -version-info 0:0:0
@@ -305,12 +316,17 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-65SC02.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-cpu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-lynx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-mem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-mikey.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-msg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-ram.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-rom.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-suzy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-sysbus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblynx_la-sysclock.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -333,12 +349,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-liblynx_la-65SC02.lo: 65SC02.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-65SC02.lo -MD -MP -MF $(DEPDIR)/liblynx_la-65SC02.Tpo -c -o liblynx_la-65SC02.lo `test -f '65SC02.c' || echo '$(srcdir)/'`65SC02.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-65SC02.Tpo $(DEPDIR)/liblynx_la-65SC02.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='65SC02.c' object='liblynx_la-65SC02.lo' libtool=yes @AMDEPBACKSLASH@
+liblynx_la-cpu.lo: cpu.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-cpu.lo -MD -MP -MF $(DEPDIR)/liblynx_la-cpu.Tpo -c -o liblynx_la-cpu.lo `test -f 'cpu.c' || echo '$(srcdir)/'`cpu.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-cpu.Tpo $(DEPDIR)/liblynx_la-cpu.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu.c' object='liblynx_la-cpu.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-65SC02.lo `test -f '65SC02.c' || echo '$(srcdir)/'`65SC02.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-cpu.lo `test -f 'cpu.c' || echo '$(srcdir)/'`cpu.c
 
 liblynx_la-log.lo: log.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-log.lo -MD -MP -MF $(DEPDIR)/liblynx_la-log.Tpo -c -o liblynx_la-log.lo `test -f 'log.c' || echo '$(srcdir)/'`log.c
@@ -354,12 +370,26 @@ liblynx_la-lynx.lo: lynx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-lynx.lo `test -f 'lynx.c' || echo '$(srcdir)/'`lynx.c
 
+liblynx_la-mem.lo: mem.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-mem.lo -MD -MP -MF $(DEPDIR)/liblynx_la-mem.Tpo -c -o liblynx_la-mem.lo `test -f 'mem.c' || echo '$(srcdir)/'`mem.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-mem.Tpo $(DEPDIR)/liblynx_la-mem.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mem.c' object='liblynx_la-mem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-mem.lo `test -f 'mem.c' || echo '$(srcdir)/'`mem.c
+
 liblynx_la-mikey.lo: mikey.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-mikey.lo -MD -MP -MF $(DEPDIR)/liblynx_la-mikey.Tpo -c -o liblynx_la-mikey.lo `test -f 'mikey.c' || echo '$(srcdir)/'`mikey.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-mikey.Tpo $(DEPDIR)/liblynx_la-mikey.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mikey.c' object='liblynx_la-mikey.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-mikey.lo `test -f 'mikey.c' || echo '$(srcdir)/'`mikey.c
+
+liblynx_la-msg.lo: msg.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-msg.lo -MD -MP -MF $(DEPDIR)/liblynx_la-msg.Tpo -c -o liblynx_la-msg.lo `test -f 'msg.c' || echo '$(srcdir)/'`msg.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-msg.Tpo $(DEPDIR)/liblynx_la-msg.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='msg.c' object='liblynx_la-msg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-msg.lo `test -f 'msg.c' || echo '$(srcdir)/'`msg.c
 
 liblynx_la-ram.lo: ram.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-ram.lo -MD -MP -MF $(DEPDIR)/liblynx_la-ram.Tpo -c -o liblynx_la-ram.lo `test -f 'ram.c' || echo '$(srcdir)/'`ram.c
@@ -374,6 +404,27 @@ liblynx_la-rom.lo: rom.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rom.c' object='liblynx_la-rom.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-rom.lo `test -f 'rom.c' || echo '$(srcdir)/'`rom.c
+
+liblynx_la-suzy.lo: suzy.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-suzy.lo -MD -MP -MF $(DEPDIR)/liblynx_la-suzy.Tpo -c -o liblynx_la-suzy.lo `test -f 'suzy.c' || echo '$(srcdir)/'`suzy.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-suzy.Tpo $(DEPDIR)/liblynx_la-suzy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='suzy.c' object='liblynx_la-suzy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-suzy.lo `test -f 'suzy.c' || echo '$(srcdir)/'`suzy.c
+
+liblynx_la-sysbus.lo: sysbus.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-sysbus.lo -MD -MP -MF $(DEPDIR)/liblynx_la-sysbus.Tpo -c -o liblynx_la-sysbus.lo `test -f 'sysbus.c' || echo '$(srcdir)/'`sysbus.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-sysbus.Tpo $(DEPDIR)/liblynx_la-sysbus.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sysbus.c' object='liblynx_la-sysbus.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-sysbus.lo `test -f 'sysbus.c' || echo '$(srcdir)/'`sysbus.c
+
+liblynx_la-sysclock.lo: sysclock.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -MT liblynx_la-sysclock.lo -MD -MP -MF $(DEPDIR)/liblynx_la-sysclock.Tpo -c -o liblynx_la-sysclock.lo `test -f 'sysclock.c' || echo '$(srcdir)/'`sysclock.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblynx_la-sysclock.Tpo $(DEPDIR)/liblynx_la-sysclock.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sysclock.c' object='liblynx_la-sysclock.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblynx_la_CFLAGS) $(CFLAGS) -c -o liblynx_la-sysclock.lo `test -f 'sysclock.c' || echo '$(srcdir)/'`sysclock.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

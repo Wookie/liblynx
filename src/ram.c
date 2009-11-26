@@ -22,25 +22,20 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "memmap.h"
+#include "msg.h"
 #include "log.h"
 #include "ram.h"
 
-#define RAM_LOG(a, ...) if((a->private) && (a->private->lfn)) LLOG(a->private->lfn, __VA_ARGS__)
-#define RAM_WARN(a, ...) if((a->private) && (a->private->lfn)) LWARN(a->private->lfn, __VA_ARGS__)
-#define RAM_ERR(a, ...) if((a->private) && (a->private->lfn)) LERR(a->private->lfn, __VA_ARGS__)
-
-
-
 struct ram_private_s
 {
-    log_fn  lfn;
+    msg_q_t     *q;
 };
 
 
-
-bool ram_init(ram_t * const ram, log_fn fn)
+bool ram_init(ram_t * const ram, msg_q_t * const q)
 {
-    if(!ram)
+    if(!ram || !q)
         return false;
 
     /* zero out the ram struct */
@@ -49,8 +44,8 @@ bool ram_init(ram_t * const ram, log_fn fn)
     /* allocate the private struct */
     ram->private = calloc(1, sizeof(struct ram_private_s));
 
-    /* store the log function */
-    ram->private->lfn = fn;
+    /* store msg q pointer */
+    ram->private->q = q;
 
     return true;
 }

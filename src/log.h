@@ -21,22 +21,22 @@
 #define _LOG_H_
 
 
-typedef enum {
+typedef enum log_level_e
+{
     LOG,
     WARNING,
     ERROR
-} LOG_LEVEL;
 
-/* log callback signature */
-typedef void (*log_fn)(LOG_LEVEL const lvl, char const * const msg);
+} log_level_t;
 
-/* the universal logging function */
-void log_msg(log_fn log, LOG_LEVEL const lvl, char const * const msg, ...);
+/* the logging wrapper function */
+void log_msg(msg_q_t * const q, source_t const src, log_level_t const lvl, 
+             char const * const msg, ...);
 
 /* utility macros */
-#define LLOG(log, ...)     log_msg(log, LOG, __VA_ARGS__)
-#define LWARN(log, ...)    log_msg(log, WARNING, __VA_ARGS__)
-#define LERR(log, ...)     log_msg(log, ERROR, __VA_ARGS__)
+#define LLOG(q, src, ...)     log_msg(q, src, LOG, __VA_ARGS__)
+#define LWARN(q, src, ...)    log_msg(q, src, WARNING, __VA_ARGS__)
+#define LERR(q, src, ...)     log_msg(q, src, ERROR, __VA_ARGS__)
 
 #endif
 

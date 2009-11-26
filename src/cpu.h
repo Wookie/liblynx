@@ -1,5 +1,5 @@
 /*
- * 65SC02.h
+ * cpu.h
  * Copyright (C) David Huseby 2009 <dave@linuxprogrammer.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@
 #define _65SC02_H_
 
 /* 65SC02 status register bits */
-typedef enum {
+typedef enum status_flags_e {
     NEGATIVE    = 0x80,
     OVERFLOW    = 0x40,
     ONE         = 0x20,
@@ -30,7 +30,7 @@ typedef enum {
     MASK_INT    = 0x04,
     ZERO        = 0x02,
     CARRY       = 0x01
-} STATUS_FLAGS;
+} status_flags_t;
 
 /* create opaque pointer to private cpu state */
 typedef struct cpu_private_s * cpu_private_t;
@@ -38,23 +38,21 @@ typedef struct cpu_private_s * cpu_private_t;
 /* 65SC02 state struct */
 typedef struct cpu_s
 {
-    uint8_t         PS;         /* Processor status register    */
+    status_flags_t  PS;         /* Processor status register    */
     uint8_t         A;          /* Accumulator                  */
     uint8_t         X;          /* X index register             */
     uint8_t         Y;          /* Y index register             */
     uint8_t         SP;         /* Stack Pointer                */
     uint16_t        PC;         /* Program Counter              */
 
+    bool            VPB;        /* Vector Pull, false when reading from vector addresses */
+
     cpu_private_t   private;    /* private internal CPU state   */
 
 } cpu_t;
 
-bool cpu_init(cpu_t * const cpu, log_fn fn);
+bool cpu_init(cpu_t * const cpu, msg_q_t * const q);
 bool cpu_deinit(cpu_t * const cpu);
-
-bool cpu_tick(cpu_t * const cpu);
-int cpu_get_remaining_ticks(cpu_t const * const cpu);
-
 
 #endif
 

@@ -20,19 +20,6 @@
 #ifndef _RAM_H_
 #define _RAM_H_
 
-#define ZERO_PAGE_SIZE          (0x0100)
-#define ZERO_PAGE_START         (0x0000)
-#define ZERO_PAGE_END           (0x00FF)
-#define IS_ZERO_PAGE_ADDRESS(a) ((a >= ZERO_PAGE_START) && (a <= ZERO_PAGE_END))
-#define MAIN_RAM_SIZE           (0xFF00)
-#define MAIN_RAM_START          (0x0100)
-#define MAIN_RAM_END            (0xFEFF)
-#define IS_MAIN_RAM_ADDRESS(a)  ((a >= RAM_START) && (a <= RAM_END))
-#define RAM_SIZE                (0xFFFF)
-#define RAM_START               (0x0000)
-#define RAM_END                 (0xFFFF)
-#define IS_RAM_ADDRESS(a)       ((a != 0xFFF8) && (a != 0xFFF9))
-
 
 typedef struct ram_private_s * ram_private_t;
 
@@ -41,9 +28,10 @@ typedef struct ram_s
     uint8_t         data[ZERO_PAGE_SIZE + RAM_SIZE];        /* the RAM data */
 
     ram_private_t   private;                                /* RAM private data */
+
 } ram_t;
 
-bool ram_init(ram_t * const ram, log_fn fn);
+bool ram_init(ram_t * const ram, msg_q_t * const q);
 bool ram_deinit(ram_t * const ram);
 
 /* NOTE: these are for debugging purposes */

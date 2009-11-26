@@ -8,6 +8,8 @@ config.status
 libtool
 src/.deps/*
 src/.libs/*
+src/*.o
+src/*.lo
 src/Makefile
 src/liblynx.la
 src/liblynx_la-lynx.lo
