@@ -64,25 +64,25 @@ bool lynx_init(lynx_t * const lynx, char const * const rom,
     lynx->private->lfn = fn;
 
     /* initialize the msg queue */
-    msg_q_init(&lynx->private->q);
+    msg_q_init(lynx->private->q);
 
     /* initialize the system bus */
-    sysbus_init(&lynx->bus, &lynx->private->q);
+    sysbus_init(&lynx->bus, lynx->private->q);
 
     /* initialize rom */
-    rom_init(&lynx->rom, rom, &lynx->private->q);
+    rom_init(&lynx->rom, rom, lynx->private->q);
 
     /* initialize ram */
-    ram_init(&lynx->ram, &lynx->private->q);
+    ram_init(&lynx->ram, lynx->private->q);
 
     /* initialize mikey */
-    mikey_init(&lynx->mikey, &lynx->private->q);
+    mikey_init(&lynx->mikey, lynx->private->q);
 
     /* initialize the cpu */
-    cpu_init(&lynx->cpu, &lynx->private->q);
+    cpu_init(&lynx->cpu, lynx->private->q);
     
     /* initialize suzie */
-    suzy_init(&lynx->suzy, &lynx->private->q);
+    suzy_init(&lynx->suzy, lynx->private->q);
 
     /* initialize the system clock */
     sysclock_init(&lynx->clock);
@@ -117,6 +117,9 @@ bool lynx_deinit(lynx_t * const lynx)
 
     /* deinitialize the system bus */
     sysbus_deinit(&lynx->bus);
+
+    /* deinitialize the message queue */
+    msg_q_deinit(lynx->private->q);
 
     if(lynx->private)
         free(lynx->private);

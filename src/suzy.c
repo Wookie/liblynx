@@ -29,10 +29,10 @@
 
 struct suzy_private_s
 {
-    msg_q_t     *q;
+    msg_q_t     q;
 };
 
-bool suzy_init(suzy_t * const suzy, msg_q_t * const q)
+bool suzy_init(suzy_t * const suzy, msg_q_t q)
 {
     if(!suzy || !q)
         return false;

@@ -50,21 +50,13 @@ typedef struct msg_s
 
 } msg_t;
 
-typedef struct msg_q_s
-{
-    msg_t           msgs[MSG_Q_SIZE];
-    int             num_msgs;
-    int             head;
-    int             tail;
+typedef struct msg_q_s * msg_q_t;
 
-} msg_q_t;
+bool msg_q_init(msg_q_t q);
+bool msg_q_deinit(msg_q_t q);
 
-
-bool msg_q_init(msg_q_t * const q);
-bool msg_q_deinit(msg_q_t * const q);
-
-bool msg_q_enqueue(msg_q_t * const q, msg_t const * const msg);
-bool msg_q_dequeue(msg_q_t * const q, msg_t * const msg);
+bool msg_q_enqueue(msg_q_t q, msg_t const * const msg);
+bool msg_q_dequeue(msg_q_t q, msg_t * const msg);
 
 #endif
 

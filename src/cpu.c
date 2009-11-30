@@ -30,7 +30,7 @@
 
 struct cpu_private_s
 {
-    msg_q_t     *q;                 /* message queue */
+    msg_q_t     q;                  /* message queue */
 
     int         remaining_ticks;    /* ticks remaining in current instruction */
     uint8_t     opcode;             /* opcode read from memory */
@@ -39,7 +39,7 @@ struct cpu_private_s
 };
 
 
-bool cpu_init(cpu_t * const cpu, msg_q_t * const q)
+bool cpu_init(cpu_t * const cpu, msg_q_t q)
 {
     if(!cpu)
         return false;

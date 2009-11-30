@@ -36,11 +36,11 @@ typedef enum mikey_state_e
 
 struct mikey_private_s
 {
-    msg_q_t         *q;
+    msg_q_t         q;
     mikey_state_t   state;      /* mikey state */
 };
 
-bool mikey_init(mikey_t * const mikey, msg_q_t * const q)
+bool mikey_init(mikey_t * const mikey, msg_q_t q)
 {
     if(!mikey || !q)
         return false;

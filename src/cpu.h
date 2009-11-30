@@ -51,7 +51,7 @@ typedef struct cpu_s
 
 } cpu_t;
 
-bool cpu_init(cpu_t * const cpu, msg_q_t * const q);
+bool cpu_init(cpu_t * const cpu, msg_q_t q);
 bool cpu_deinit(cpu_t * const cpu);
 
 #endif

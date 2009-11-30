@@ -29,11 +29,11 @@
 
 struct sysbus_private_s
 {
-    msg_q_t     *q;
+    msg_q_t     q;
 };
 
 
-bool sysbus_init(sysbus_t * const bus, msg_q_t * const q)
+bool sysbus_init(sysbus_t * const bus, msg_q_t q)
 {
     if(!bus || !q)
         return false;

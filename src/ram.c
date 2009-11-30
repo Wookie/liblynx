@@ -29,11 +29,11 @@
 
 struct ram_private_s
 {
-    msg_q_t     *q;
+    msg_q_t     q;
 };
 
 
-bool ram_init(ram_t * const ram, msg_q_t * const q)
+bool ram_init(ram_t * const ram, msg_q_t q)
 {
     if(!ram || !q)
         return false;

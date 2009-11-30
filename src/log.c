@@ -29,7 +29,7 @@
 
 #define MAX_LOG_MSG_SIZE (4096)
 
-void log_msg(msg_q_t * const q, source_t const src, log_level_t const lvl, 
+void log_msg(msg_q_t q, source_t const src, log_level_t const lvl, 
              char const * const fmt, ...)
 {
     static msg_t msg;

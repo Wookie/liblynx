@@ -31,11 +31,11 @@
 
 struct rom_private_s
 {
-    msg_q_t     *q;
+    msg_q_t     q;
 };
 
 
-bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t * const q)
+bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t q)
 {
     FILE* in = NULL;
     size_t num_read = 0;

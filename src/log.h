@@ -30,7 +30,7 @@ typedef enum log_level_e
 } log_level_t;
 
 /* the logging wrapper function */
-void log_msg(msg_q_t * const q, source_t const src, log_level_t const lvl, 
+void log_msg(msg_q_t q, source_t const src, log_level_t const lvl, 
              char const * const msg, ...);
 
 /* utility macros */

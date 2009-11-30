@@ -29,7 +29,7 @@ typedef struct suzy_s
 } suzy_t;
 
 
-bool suzy_init(suzy_t * const suzy, msg_q_t * const q);
+bool suzy_init(suzy_t * const suzy, msg_q_t q);
 bool suzy_deinit(suzy_t * const suzy);
 
 #endif

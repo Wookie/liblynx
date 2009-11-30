@@ -46,7 +46,7 @@ typedef struct sysbus_s
 
 } sysbus_t;
 
-bool sysbus_init(sysbus_t * const bus, msg_q_t * const q);
+bool sysbus_init(sysbus_t * const bus, msg_q_t q);
 bool sysbus_deinit(sysbus_t * const bus);
 
 

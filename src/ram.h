@@ -31,7 +31,7 @@ typedef struct ram_s
 
 } ram_t;
 
-bool ram_init(ram_t * const ram, msg_q_t * const q);
+bool ram_init(ram_t * const ram, msg_q_t q);
 bool ram_deinit(ram_t * const ram);
 
 /* NOTE: these are for debugging purposes */

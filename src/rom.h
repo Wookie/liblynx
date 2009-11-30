@@ -30,7 +30,7 @@ typedef struct rom_s
 
 } rom_t;
 
-bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t * const q);
+bool rom_init(rom_t * const rom, char const * const romfile, msg_q_t q);
 bool rom_deinit(rom_t * const rom);
 
 bool rom_peek(rom_t * const rom, uint16_t const address, uint8_t * const data);

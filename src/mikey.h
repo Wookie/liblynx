@@ -31,7 +31,7 @@ typedef struct mikey_s
 } mikey_t;
 
 
-bool mikey_init(mikey_t * const mikey, msg_q_t * const q);
+bool mikey_init(mikey_t * const mikey, msg_q_t q);
 bool mikey_deinit(mikey_t * const mikey);
 
 #endif
