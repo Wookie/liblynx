@@ -65,12 +65,13 @@ bool mem_read(mem_t * const m, source_t const src,
     {
         case VIDEO:
         case REFRESH:
-           return ram_read(m->ram, address, data);
+           //return ram_read(m->ram, address, data);
         
         case SUZY:
-           return ram_read(m->ram, address, data);
+           //return ram_read(m->ram, address, data);
 
         case CPU:
+            /*
             if(IS_INTVEC_ADDRESS(address) && IS_BIT_SET(m->ctrl, VECTORS_ENABLE))
             {
                 return rom_read(m->rom, address, data);
@@ -91,6 +92,7 @@ bool mem_read(mem_t * const m, source_t const src,
             {
                 return ram_read(m->ram, address, data);
             }
+            */
             break;
         default:
             break;
@@ -107,12 +109,13 @@ bool mem_write(mem_t * const m, source_t const src,
     {
         case VIDEO:
         case REFRESH:
-           return ram_write(m->ram, address, data);
+           //return ram_write(m->ram, address, data);
         
         case SUZY:
-           return ram_write(m->ram, address, data);
+           //return ram_write(m->ram, address, data);
 
         case CPU:
+            /*
             if(IS_MIKEY_ADDRESS(address) && IS_BIT_SET(m->ctrl, MIKEY_ENABLE))
             {
                 return mikey_write(m->mikey, address, data);
@@ -125,6 +128,7 @@ bool mem_write(mem_t * const m, source_t const src,
             {
                 return ram_write(m->ram, address, data);
             }
+            */
             break;
         default:
             break;

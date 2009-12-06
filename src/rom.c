@@ -26,7 +26,6 @@
 #include "memmap.h"
 #include "msg.h"
 #include "log.h"
-#include "memmap.h"
 #include "rom.h"
 
 struct rom_private_s

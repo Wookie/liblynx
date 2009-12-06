@@ -72,13 +72,13 @@ bool ram_peek(ram_t * const ram, uint16_t const address, uint8_t * const data)
 
     if(!data)
     {
-        RAM_ERR(ram, "ram_peek(): NULL data pointer");
+        LERR(ram->private->q, RAM, "ram_peek(): NULL data pointer");
         return false;
     }
     
     if(!IS_RAM_ADDRESS(address))
     {
-        RAM_ERR(ram, "ram_peek(): reading from invalid RAM address 0x%04x", address);
+        LERR(ram->private->q, RAM, "ram_peek(): reading from invalid RAM address 0x%04x", address);
         return false;
     }
 
@@ -97,7 +97,7 @@ bool ram_poke(ram_t * const ram, uint16_t const address, uint8_t const data)
 
     if(!IS_RAM_ADDRESS(address))
     {
-        RAM_ERR(ram, "ram_poke(): writing to invalid RAM address 0x%04x", address);
+        LERR(ram->private->q, RAM, "ram_poke(): writing to invalid RAM address 0x%04x", address);
         return false;
     }
     
